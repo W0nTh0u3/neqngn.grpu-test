@@ -1,0 +1,49 @@
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Wallet (ETH)</mat-card-title>
+        <mat-card-subtitle>Manage your wallet</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        @if (address) {
+            <p>Wallet connected successfully!</p>
+            <p>Connected Wallet Address: {{ address }}</p>
+            <p>Balance: {{ balance }}</p>
+            <p>Last 10 Transactions</p>
+            @if (transactions?.length) {
+                <ul>
+                    @for (tx of transactions; track tx.hash) {
+                        <li class="transaction">
+                            <p><strong>Hash:</strong> {{ tx.hash }}</p>
+                            <p><strong>From:</strong> {{ tx.from }}</p>
+                            <p><strong>To:</strong> {{ tx.to }}</p>
+                            <p><strong>Value:</strong> {{ tx.value }} ETH</p>
+                            <p><strong>Status:</strong> {{ tx.isError === "0" ? 'Success' : 'Failed' }}</p>
+                            <hr />
+                        </li>
+                    }
+                </ul>
+                
+            }
+            @else {
+                <p>No transactions found.</p>
+            }
+        }
+        @else {
+            <p>Use the button below to open your wallet.</p>
+        }
+    </mat-card-content>
+    <mat-card-actions class="actions">
+        @if (hasEthereumProvider) {
+            @if (!isLoading() && !address) {
+                <button matButton="filled" (click)="connectWallet()">Connect Wallet</button>
+            } @else if (isLoading()) {
+                <button matButton="filled" disabled>Loading...</button>
+                @if (error) {
+                    <p class="error">{{ error }}</p>
+                }
+            }
+        } @else {
+            <p>No Ethereum provider detected. Please install a wallet extension like MetaMask.</p>
+        }
+    </mat-card-actions>
+</mat-card>
