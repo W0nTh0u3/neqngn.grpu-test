@@ -1,49 +1,105 @@
-<mat-card class="example-card" appearance="outlined">
-    <mat-card-header>
-        <mat-card-title>Wallet (ETH)</mat-card-title>
-        <mat-card-subtitle>Manage your wallet</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-        @if (address) {
-            <p>Wallet connected successfully!</p>
-            <p>Connected Wallet Address: {{ address }}</p>
-            <p>Balance: {{ balance }}</p>
-            <p>Last 10 Transactions</p>
-            @if (transactions?.length) {
-                <ul>
-                    @for (tx of transactions; track tx.hash) {
-                        <li class="transaction">
-                            <p><strong>Hash:</strong> {{ tx.hash }}</p>
-                            <p><strong>From:</strong> {{ tx.from }}</p>
-                            <p><strong>To:</strong> {{ tx.to }}</p>
-                            <p><strong>Value:</strong> {{ tx.value }} ETH</p>
-                            <p><strong>Status:</strong> {{ tx.isError === "0" ? 'Success' : 'Failed' }}</p>
-                            <hr />
-                        </li>
-                    }
-                </ul>
-                
+<mat-card class="wallet-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>
+      <span class="wallet-title"><span class="eth-badge">ETH</span>Wallet</span>
+    </mat-card-title>
+    <mat-card-subtitle>Manage your wallet</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    @if (address) {
+      <div class="wallet-info">
+        <mat-icon color="primary" class="wallet-icon"
+          >account_balance_wallet</mat-icon
+        >
+        <div>
+          <p class="success-msg">Wallet connected!</p>
+          <p class="wallet-address">
+            <strong>Address:</strong> <span>{{ address }}</span>
+          </p>
+          <p class="wallet-balance">
+            <strong>Balance:</strong> <span>{{ balance }} ETH</span>
+          </p>
+        </div>
+      </div>
+      <div class="transactions-section">
+        <h3>Last 10 Transactions</h3>
+        @if (transactions?.length) {
+          <mat-list>
+            @for (tx of transactions; track tx.hash) {
+              <mat-list-item
+                class="transaction-item"
+                [ngClass]="{ failed: tx.isError === '1' }"
+              >
+                <div class="tx-details">
+                  <div class="tx-hash">
+                    <span class="label">Hash:</span>
+                    <span class="value"
+                      >{{ tx.hash | slice: 0 : 10 }}...{{
+                        tx.hash | slice: -6
+                      }}</span
+                    >
+                  </div>
+                  <div class="tx-meta">
+                    <span
+                      ><strong>From:</strong> {{ tx.from | slice: 0 : 8 }}...
+                    </span>
+                    <span
+                      ><strong>To:</strong>
+                      {{
+                        tx.to
+                          ? (tx.to | slice: 0 : 8) + "..."
+                          : "Contract Creation"
+                      }}</span
+                    >
+                  </div>
+                  <div class="tx-value">
+                    <span><strong>Value:</strong> {{ tx.value }} ETH</span>
+                  </div>
+                  <span
+                    class="tx-status"
+                    [ngClass]="{
+                      success: tx.isError === '0',
+                      failed: tx.isError === '1',
+                    }"
+                  >
+                    {{ tx.isError === "0" ? "Success" : "Failed" }}
+                  </span>
+                </div>
+              </mat-list-item>
             }
-            @else {
-                <p>No transactions found.</p>
-            }
-        }
-        @else {
-            <p>Use the button below to open your wallet.</p>
-        }
-    </mat-card-content>
-    <mat-card-actions class="actions">
-        @if (hasEthereumProvider) {
-            @if (!isLoading() && !address) {
-                <button matButton="filled" (click)="connectWallet()">Connect Wallet</button>
-            } @else if (isLoading()) {
-                <button matButton="filled" disabled>Loading...</button>
-                @if (error) {
-                    <p class="error">{{ error }}</p>
-                }
-            }
+          </mat-list>
         } @else {
-            <p>No Ethereum provider detected. Please install a wallet extension like MetaMask.</p>
+          <p class="no-tx-msg">No transactions found.</p>
         }
-    </mat-card-actions>
+      </div>
+    } @else {
+      <div class="wallet-disconnected">
+        <mat-icon color="warn" class="wallet-icon"
+          >account_balance_wallet</mat-icon
+        >
+        <p>Use the button below to open your wallet.</p>
+      </div>
+    }
+  </mat-card-content>
+  <mat-card-actions class="actions">
+    @if (hasEthereumProvider) {
+      @if (!isLoading() && !address) {
+        <button mat-flat-button color="primary" (click)="connectWallet()">
+          Connect Wallet
+        </button>
+      } @else if (isLoading()) {
+        <mat-progress-spinner diameter="20" mode="indeterminate"
+          >Loading...</mat-progress-spinner
+        >
+      }
+    } @else {
+      <p class="no-provider-msg">
+        No Ethereum provider detected. Please install a wallet extension like
+        <strong>MetaMask</strong>.
+      </p>
+    }
+    @if (error) {
+      <p class="error">{{ error }}</p>
+    }
+  </mat-card-actions>
 </mat-card>

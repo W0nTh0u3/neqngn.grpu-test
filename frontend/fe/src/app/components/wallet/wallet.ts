@@ -1,12 +1,16 @@
 import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { WalletService } from '../../services/wallet.service';
 import { ITransaction } from '../../models/transaction.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-wallet',
-  imports: [MatButtonModule, MatCardModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule, MatListModule, MatProgressSpinnerModule],
   templateUrl: './wallet.html',
   styleUrl: './wallet.scss'
 })
@@ -38,7 +42,7 @@ export class Wallet {
     } catch (err: any) {
       console.error('error?', err);
       this.error = 'Failed to connect or fetch data. Check console.';
-    } finally {   
+    } finally {
       this.isLoading.set(false);
       console.log('Loading state:', this.isLoading());
     }
