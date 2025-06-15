@@ -59,8 +59,7 @@ MONGO_URI=mongodb://localhost:27017/eth-api
 
 ```bash
 npm install
-npm run build
-npm start
+npm run dev
 ```
 
 ### Example Request:
