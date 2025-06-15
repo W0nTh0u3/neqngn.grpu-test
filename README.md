@@ -126,5 +126,6 @@ npx hardhat run scripts/interact.ts --network sepolia
 ## ⚠️ Known Limitations
 
 - Frontend does not directly call the backend.
+- Etherscan API key is exposed on the frontend due to the nature of this being a frontend-only project. In production, this should be proxied through a secure backend.
 - Token interaction is via scripts, not frontend UI (inside contracts).
 - No Docker implementation.
